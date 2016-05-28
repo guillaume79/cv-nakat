@@ -1,17 +1,35 @@
 $(document).ready(function(){
 
+  var getPosition = function(obj) {
+    var positions = {
+      x: parseFloat(obj.css('left')),
+      y: parseFloat(obj.css('top')),
+      height: parseFloat(obj.css('height')),
+      width: parseFloat(obj.css('width')),
+    };
+    return positions;
+  }
 
+  // *************************FONCTION COLLISION******************************
+  var isCollision = function(obj1, obj2) {
+    if(obj1.x < obj2.x + obj2.width &&
+     obj1.x + obj1.width > obj2.x &&
+     obj1.y < obj2.y + obj2.height &&
+     obj1.height + obj1.y > obj2.y) {
+      return true;
+    }else {
+      return false;
+    }
+  }
 
   var monsterContainer = $('#monster-container');
   var monsterSprites = $('#monster-sprites');
+  var monsterLife = 3;
+  var theScore = $('#score');
+  theScore.html(monsterLife);
 
   var background = $('#background');
-  background = {
-    x: parseFloat(background.css('top')),
-    y: parseFloat(background.css('left')),
-    height: parseFloat(background.css('height')),
-    width: parseFloat(background.css('width')),
-  };
+  background = getPosition(background);
 //***********STONES*************************
   var stone = $('#stone');
   var stone1 = $('#stone1');
@@ -23,116 +41,57 @@ $(document).ready(function(){
   var stone7 = $('#stone7');
 
 // **********STONES POSITIONS****************
-    var stonePosition = {
-      x: parseFloat(stone.css('left')),
-      y: parseFloat(stone.css('top')),
-      height: parseFloat(stone.css('height')),
-      width: parseFloat(stone.css('width')),
-      point:100,
-    };
-
-      var stone1Position = {
-        x: parseFloat(stone1.css('left')),
-        y: parseFloat(stone1.css('top')),
-        height: parseFloat(stone1.css('height')),
-        width: parseFloat(stone1.css('width')),
-        point:100,
-      };
-
-      var stone2Position = {
-        x: parseFloat(stone2.css('left')),
-        y: parseFloat(stone2.css('top')),
-        height: parseFloat(stone2.css('height')),
-        width: parseFloat(stone2.css('width')),
-        point:100,
-      };
-
-    var stone3Position = {
-      x: parseFloat(stone3.css('left')),
-      y: parseFloat(stone3.css('top')),
-      height: parseFloat(stone3.css('height')),
-      width: parseFloat(stone3.css('width')),
-      point:100,
-    };
-
-    var stone4Position = {
-      x: parseFloat(stone4.css('left')),
-      y: parseFloat(stone4.css('top')),
-      height: parseFloat(stone4.css('height')),
-      width: parseFloat(stone4.css('width')),
-      point:100,
-    };
-
-    var stone5Position = {
-      x: parseFloat(stone5.css('left')),
-      y: parseFloat(stone5.css('top')),
-      height: parseFloat(stone5.css('height')),
-      width: parseFloat(stone5.css('width')),
-      point:100,
-    };
-
-    var stone6Position = {
-      x: parseFloat(stone6.css('left')),
-      y: parseFloat(stone6.css('top')),
-      height: parseFloat(stone6.css('height')),
-      width: parseFloat(stone6.css('width')),
-      point:100,
-    };
-
-    var stone7Position = {
-      x: parseFloat(stone7.css('left')),
-      y: parseFloat(stone7.css('top')),
-      height: parseFloat(stone7.css('height')),
-      width: parseFloat(stone7.css('width')),
-      point:100,
-    };
+    var stonePosition = getPosition(stone);
+    var stone1Position = getPosition(stone1);
+    var stone2Position = getPosition(stone2);
+    var stone3Position = getPosition(stone3);
+    var stone4Position = getPosition(stone4);
+    var stone5Position = getPosition(stone5);
+    var stone6Position = getPosition(stone6);
+    var stone7Position = getPosition(stone7);
 
     // ************FIREBALLS ******************
     var fireBall = $('#fireBall');
     var fireBall1 = $('#fireBall1');
     var fireBall2 = $('#fireBall2');
-    // var fireBall3 = $('#fireBall3');
-
-// ***************FIREBALLS POSITION**************
-    var fireBallPosition = {
-      x: parseFloat(fireBall.css('left')),
-      y: parseFloat(fireBall.css('top')),
-      height: parseFloat(fireBall.css('height')),
-      width: parseFloat(fireBall.css('width')),
-    };
 
 
-    var fireBall1Position = {
-      x: parseFloat(fireBall1.css('left')),
-      y: parseFloat(fireBall1.css('top')),
-      height: parseFloat(fireBall1.css('height')),
-      width: parseFloat(fireBall1.css('width')),
-    };
+// **************COLLISIONS FIREBALL/MONSTER***********
+      var mainInterval = setInterval(function() {
+        var monsterPosition = getPosition(monsterContainer);
+        var fireBallPosition = getPosition(fireBall);
+        var fireBall1Positon = getPosition(fireBall1);
+        var fireBall2Positon = getPosition(fireBall2);
+        var fireBallTab = [];
 
-    var fireBall2Position = {
-      x: parseFloat(fireBall2.css('left')),
-      y: parseFloat(fireBall2.css('top')),
-      height: parseFloat(fireBall2.css('height')),
-      width: parseFloat(fireBall2.css('width')),
-    };
-    //
-    // var fireBall3Position = {
-    //   x: parseFloat(fireBall3.css('left')),
-    //   y: parseFloat(fireBall3.css('top')),
-    //   height: parseFloat(fireBall3.css('height')),
-    //   width: parseFloat(fireBall3.css('width')),
-    // };
+        fireBallTab.push(fireBallPosition, fireBall1Positon, fireBall2Positon);
+        fireBallTab.forEach(function(fireball) {
+                    if (isCollision(fireball, monsterPosition)) {
+            // console.log('collisisn ......  ');
+            monsterLife = monsterLife -1;
+            theScore.html(monsterLife);
+            if(monsterLife === 0) {
+              monsterContainer.css ('opacity', 0);
+              clearInterval(fireBallInterval);
+              clearInterval(fireBallInterval1);
+              clearInterval(fireBallInterval2);
+              clearInterval(mainInterval);
+            }else{
+              monsterContainer.removeClass('blinko').delay(300).queue(function(next){
+                  $(this).addClass('blinko');
+                  next();
+              });
+            }
+          }
+        });
+  },300);
+
 
 // ******************MONSTER*********************
 //
   var monsterPosition;
   $(window).keydown(function(event){
-    monsterPosition = {
-      x: parseFloat(monsterContainer.css('left')),
-      y: parseFloat(monsterContainer.css('top')),
-      height: parseFloat(monsterContainer.css('height')),
-      width: parseFloat(monsterContainer.css('width')),
-    };
+    monsterPosition = getPosition(monsterContainer);
 
 // ****************STONE/MONSTER COLLISION***************
     if (isCollision(stonePosition, monsterPosition)) {
@@ -161,26 +120,12 @@ $(document).ready(function(){
       stone7.css('opacity', 0);
     }
 
-  //   setInterval(function() {
-  //     if (isCollision(fireBallPosition, monsterPosition)) {
-  //       alert('salut');
-  //   }
-  // },20);
-
-
 
 //*****************FIREBALLS/MONSTER COLLISION**********
-    // var collision = isCollision(stone3Position, monsterPosition);
-    //
-    // if(collision === true) {
-    //   stone3.css('opacity', 0 );
-    // }
-
     var code = event.keyCode;
-
     switch(code){
 
-        //*******************instructions pour GAUCHE  *******************
+    //*******************instructions pour GAUCHE  *******************
     case 37:
     var monsterLeft =  parseFloat(monsterContainer.css('left'));
     if(monsterLeft >= 20){
@@ -259,50 +204,25 @@ $(document).ready(function(){
 
   });
 
-// *************************FONCTION COLLISION******************************
-  var isCollision = function(obj1, obj2) {
-  if(obj1.x < obj2.x + obj2.width &&
-   obj1.x + obj1.width > obj2.x &&
-   obj1.y < obj2.y + obj2.height &&
-   obj1.height + obj1.y > obj2.y) {
-    return true;
-  }else {
-    return false;
-  }
-  }
 
-
-  setInterval(function() {
-
-    console.log($('#fireBall').css('left') + ' / ' + $('#fireBall').css('top'));
-    console.log($('#fireBall1').css('left') + ' / ' + $('#fireBall1').css('top'));
-    console.log('***');
-  }, 200);
-
-      setInterval(function() {
+      var fireBallInterval = setInterval(function() {
         $('#fireBall').animate({"top": "1000"}, 2100,function() {
           $("#fireBall").css({"top": "-200px"})});
       }, 2900 );
 
 
-      setInterval(function() {
+
+      var fireBallInterval1 = setInterval(function() {
           $('#fireBall1').animate({"top": "1000"}, 1800,function() {
               $("#fireBall1").css({"top": "-200px"})});
      }, 2200 );
 
 
-      setInterval(function() {
+      var fireBallInterval2 = setInterval(function() {
           $('#fireBall2').animate({"top": "1000"}, 2000,function(){
               $("#fireBall2").css({"top": "-200px"})});
-     }, 1400 );
+     }, 1800 );
 
-
-      setInterval(function() {
-        $("#monster-sprites").animate({'left': "0px"},
-        0, function(){
-          $("#monster-sprites").css({"left": "-96px"})});
-      }, 600 );
-
-      // var sample = document.getElementById("music")[0];
-      // sample.play();
+      var sample = document.getElementById("music")[0];
+      sample.play();
 });

@@ -159,7 +159,7 @@ left: 50px;
   left:0px;
 }
 
-/*@keyframes blink {
+@keyframes blink {
     0% {
         opacity: 1;
     }
@@ -174,9 +174,9 @@ left: 50px;
     }
 }
 .blinko {
-    animation: blink 1s;
-    animation-iteration-count: infinite;
-}*/
+    animation: blink 0.3s;
+    animation-iteration-count:3;
+}
 
 /*****************************************************/
 
@@ -191,20 +191,17 @@ left: 50px;
 #scoreboard {
   position:absolute;
   background-color: black;
+  color:red;
+  font-size: 3.5em;
   width: 296px;
   height: 175px;
   left:1248px;
   top: 418px;
   border: 5px groove red;
 }
-#scoreboard table{
-  color:white;
-  font-size: 1.8em;
-  text-transform: uppercase;
-}
-.score{
-  border-bottom: 2px solid white;
-  text-align: center;
+#score{
+  color: white;
+  font-size: 1.4em;
 }
 
 /*LOGO WEB*/
@@ -266,13 +263,7 @@ left: 50px;
 }
 #fireBall2{
   position:absolute;
-  left:700px;
-  top: -296px;
-  z-index: 1;
-}
-#fireBall3{
-  position:absolute;
-  left:470px;
+  left:900px;
   top: -296px;
   z-index: 1;
 }
@@ -285,12 +276,6 @@ left: 50px;
   left: 244px;
   height:131px;
   /*border:1px solid red;*/
-}
-#blow{
-  position: absolute;
-  top: 374px;
-  left: 299px;
-  height:131px;
 }
 #stone1{
   position: absolute;
